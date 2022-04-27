@@ -25,9 +25,8 @@ export default {
         async createdBy(comment: any) {
             return await comment.getUser();
         },
-        async post(comment: any) {
+        async postId(comment: any) {
             return await comment.getPost();
-        },
+        }
     }
-
 };
