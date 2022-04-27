@@ -1,34 +1,42 @@
-import { Post } from './Post'
-import { User } from './User'
-import { Comment } from './Comment'
+import { Post as _Post } from './Post'
+import { User as _User } from './User'
+import { Comment as _Comment } from './Comment'
 import db from '../db'
 import { hashSync } from "bcryptjs";
+import { InstanceUpdateOptions } from 'sequelize/types';
+import SequelizeSimpleCache from 'sequelize-simple-cache';
 
 export {
-  Post,
-  User,
-  Comment
+  _Post as Post,
+  _User as User,
+  _Comment as Comment
 }
+
+const Cache = new SequelizeSimpleCache({
+  User: {},
+  Post: {},
+  Comment: {}
+});
+
 
 export function initModels() {
   let sequelize = db
 
-  Post.initModel(sequelize)
-  User.initModel(sequelize)
-  Comment.initModel(sequelize)
+  let Post = Cache.init(_Post.initModel(sequelize))
+  let User = Cache.init(_User.initModel(sequelize))
+  let Comment = Cache.init(_Comment.initModel(sequelize))
 
   // Hooks
-  User.addHook('beforeCreate', (user: User) => {
+  User.addHook('beforeCreate', (user: _User) => {
     user.password = hashSync(user.password, 10)
   })
-  // TODO: add hooks for update password
-
+  User.addHook('beforeUpdate', (user: _User, options: InstanceUpdateOptions) => {
+    user.changed("password") && (user.password = hashSync(user.password, 10))
+  })
 
   //Associations
-
-
   Post.belongsTo(User, {
-    as: 'created_by',
+    as: 'user',
     foreignKey: 'createdBy'
   })
   Post.hasMany(Comment, {
@@ -37,6 +45,10 @@ export function initModels() {
   })
   User.hasMany(Post, {
     as: 'posts',
+    foreignKey: 'createdBy'
+  })
+  User.hasMany(Comment, {
+    as: 'comments',
     foreignKey: 'createdBy'
   })
   Comment.belongsTo(User, {
