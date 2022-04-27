@@ -18,9 +18,10 @@ import {
   NonAttribute,
   Sequelize
 } from 'sequelize'
+import type { Comment } from './Comment'
 import type { Post } from './Post'
 
-type UserAssociations = 'posts'
+type UserAssociations = 'posts' | 'comments'
 
 export class User extends Model<
   InferAttributes<User, {omit: UserAssociations}>,
@@ -45,8 +46,22 @@ export class User extends Model<
   declare hasPosts: HasManyHasAssociationsMixin<Post, number>
   declare countPosts: HasManyCountAssociationsMixin
   
+  // User hasMany Comment
+  declare comments?: NonAttribute<Comment[]>
+  declare getComments: HasManyGetAssociationsMixin<Comment>
+  declare setComments: HasManySetAssociationsMixin<Comment, number>
+  declare addComment: HasManyAddAssociationMixin<Comment, number>
+  declare addComments: HasManyAddAssociationsMixin<Comment, number>
+  declare createComment: HasManyCreateAssociationMixin<Comment, 'createdBy'>
+  declare removeComment: HasManyRemoveAssociationMixin<Comment, number>
+  declare removeComments: HasManyRemoveAssociationsMixin<Comment, number>
+  declare hasComment: HasManyHasAssociationMixin<Comment, number>
+  declare hasComments: HasManyHasAssociationsMixin<Comment, number>
+  declare countComments: HasManyCountAssociationsMixin
+  
   declare static associations: {
-    posts: Association<User, Post>
+    posts: Association<User, Post>,
+    comments: Association<User, Comment>
   }
 
   static initModel(sequelize: Sequelize): typeof User {
