@@ -1,4 +1,5 @@
 import express from 'express';
+import 'dotenv/config'
 import { ApolloServer } from 'apollo-server-express'
 import typeDefs from './graphql/schemas';
 import resolvers from './graphql/resolvers';
@@ -16,8 +17,8 @@ const apolloServer = new ApolloServer({
 apolloServer.start().then(() => {
   apolloServer.applyMiddleware({ app, path: '/graphql', cors: false });
 
-  app.listen(4000, () => {
-    console.log('🚀  Server ready at http://localhost:4000/graphql');
+  app.listen(process.env.SRV_PORT, () => {
+    console.log(`🚀 Server ready at http://${process.env.SRV_HOST}:${process.env.SRV_PORT}/graphql`);
   });
 });
 
