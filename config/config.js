@@ -1,26 +1,26 @@
 module.exports = {
   development: {
-    dialect: 'mysql',
-    database: process.env.MYSQL_DB_NAME || 'blogwithefe',
-    username: process.env.MYSQL_DB_USERNAME || 'root',
-    password: process.env.MYSQL_DB_PASSWORD || 'root',
-    host: process.env.MYSQL_DB_HOST || 'localhost',
-    port: parseInt(process.env.MYSQL_DB_PORT || '3306')
+    dialect: process.env.DB_DIALECT_DEV,
+    database: process.env.DB_NAME_DEV,
+    username: process.env.DB_USERNAME_DEV,
+    password: process.env.DB_PASSWORD_DEV,
+    host: process.env.DB_HOST_DEV,
+    port: parseInt(process.env.DB_PORT_DEV)
   },
   test: {
-    dialect: 'mysql',
-    database: process.env.MYSQL_DB_NAME || 'blogwithefe',
-    username: process.env.MYSQL_DB_USERNAME || 'root',
-    password: process.env.MYSQL_DB_PASSWORD || 'root',
-    host: process.env.MYSQL_DB_HOST || 'localhost',
-    port: parseInt(process.env.MYSQL_DB_PORT || '3306')
+    dialect: process.env.DB_DIALECT_TEST,
+    database: process.env.DB_NAME_TEST,
+    username: process.env.DB_USERNAME_TEST,
+    password: process.env.DB_PASSWORD_TEST,
+    host: process.env.DB_HOST_TEST,
+    port: parseInt(process.env.DB_PORT_TEST)
   },
   production: {
-    dialect: 'mysql',
-    database: process.env.MYSQL_DB_NAME,
-    username: process.env.MYSQL_DB_USERNAME,
-    password: process.env.MYSQL_DB_PASSWORD,
-    host: process.env.MYSQL_DB_HOST,
-    port: parseInt(process.env.MYSQL_DB_PORT)
+    dialect: process.env.DB_DIALECT_PROD,
+    database: process.env.DB_NAME_PROD,
+    username: process.env.DB_USERNAME_PROD,
+    password: process.env.DB_PASSWORD_PROD,
+    host: process.env.DB_HOST_PROD,
+    port: parseInt(process.env.DB_PORT_PROD)
   }
 }
