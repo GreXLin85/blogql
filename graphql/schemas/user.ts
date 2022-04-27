@@ -1,38 +1,43 @@
 import { gql } from 'apollo-server-express';
 
 export default gql`
+scalar Date
+
 type User {
-     id: Int
-     username: String!
-     password: String!
-     posts: [Post]
-
- }
-
- extend type Mutation {
-     register(username: String!, password: String!): RegisterResponse
-     login(username: String!,password: String!): LoginResponse
- }
-
- type RegisterResponse {
-    id: Int!
+    id: ID!
     username: String!
+    password: String!
+    posts: [Post]
+    comments: [Comment]
+    createdAt: Date
+    updatedAt: Date
  }
 
- input RegisterInput {
-     username: String!
-     password: String!
- }
+    extend type Query {
+        users: [User]
+        user(id: ID!): User
+    }
 
-input LoginInput {
-    username: String!
-     password: String!
- }
+    type Login {
+        user: User
+        token: String
+    }
 
-  type LoginResponse {
-    id: Int!
-    username: String!
-    token: String!
- }
+    extend type Mutation {
+        createUser(username: String!, password: String!): User
+        updateUser(id: ID, data: UserUpdate!): User
+        deleteUser(id: ID!): Int
+    }
+    
+    input UserUpdate {
+        username: String, password: String
+    }
+    
+    # Auth mutations
+    extend type Mutation {
+        login(username: String!, password: String!): Login
+        register(username: String!, password: String!): User
+    }
+    
 
 `;

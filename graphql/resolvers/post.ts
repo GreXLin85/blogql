@@ -1,4 +1,4 @@
-import { initModels } from '../../models';
+import { initModels, Post as PostType } from '../../models';
 const { Post } = initModels();
 
 import { AuthenticationError } from 'apollo-server-express';
@@ -12,35 +12,56 @@ export default {
             if (!createdBy) {
                 createdBy = user.id;
             }
-            let asd = await Post.create({
+
+            return await Post.create({
                 title,
                 description,
                 createdBy,
             });
-
-
-
-            return asd;
         },
+        async updatePost(root: any, { id, data }: any, { user = null }: any) {
+            if (!user) {
+                throw new AuthenticationError('You must login to update a post');
+            }
+
+            let updatedPost = await Post.update(data, {
+                where: { id },
+            });
+
+            if (updatedPost) {
+                return await Post.noCache().findByPk(id);
+            }
+        },
+        async deletePost(root: any, { id }: any, { user = null }: any) {
+            if (!user) {
+                throw new AuthenticationError('You must login to delete a post');
+            }
+
+            let deletedPost = await Post.destroy({
+                where: { id },
+            });
+
+            if (deletedPost) {
+                return { id };
+            }
+            
+        }
     },
     Query: {
-        getAllPosts(root: any, args: any, context: any) {
-            return Post.findAll();
+        async posts() {
+            return await Post.findAll();
         },
-        getSinglePost(_: any, { postId }: any, context: any) {
-            return Post.findByPk(postId);
-        },
+        async post(root: any, { id }: any) {
+            return await Post.findByPk(id);
+        }
     },
 
     Post: {
-        async created_by(post: any) {
-
+        async createdBy(post: PostType) {
             return await post.getUser();
-
         },
-
-        comments(post: any) {
-            return post.getComments();
-        },
+        async comments(post: PostType) {
+            return await post.getComments();
+        }
     },
 };
