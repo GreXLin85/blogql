@@ -1,7 +1,8 @@
 import { initModels, Post as PostType } from '../../models';
 const { Post } = initModels();
 
-import { AuthenticationError } from 'apollo-server-express';
+import { ApolloError, AuthenticationError, ForbiddenError } from 'apollo-server-express';
+import getFields from '../utils/getFields';
 
 export default {
     Mutation: {
@@ -24,44 +25,64 @@ export default {
                 throw new AuthenticationError('You must login to update a post');
             }
 
-            let updatedPost = await Post.update(data, {
-                where: { id },
-            });
-
-            if (updatedPost) {
-                return await Post.noCache().findByPk(id);
+            const post = await Post.findByPk(id);
+            if (post) {
+                if (post.createdBy === user.id) {
+                    try {
+                        return await post.update(data);
+                    } catch (error) {
+                        throw new ApolloError('Unable to update a post');
+                    }
+                }
+                throw new ForbiddenError('You are not allowed to update this post');
             }
+            throw new ForbiddenError('Unable to update a post');
         },
         async deletePost(root: any, { id }: any, { user = null }: any) {
             if (!user) {
                 throw new AuthenticationError('You must login to delete a post');
             }
 
-            let deletedPost = await Post.destroy({
-                where: { id },
-            });
+            const post = await Post.findByPk(id);
+            if (post) {
+                if (post.createdBy === user.id) {
+                    try {
+                        await post.destroy();
 
-            if (deletedPost) {
-                return { id };
+                        return id;
+                    } catch (error) {
+                        throw new ApolloError('Unable to delete a post');
+                    }
+                }
+                throw new ForbiddenError('You are not allowed to delete this post');
             }
-            
         }
     },
     Query: {
-        async posts() {
-            return await Post.findAll();
+        async posts(_: any, { first, after }: any, context: any, info: any) {
+            return await Post.findAll({
+                limit: first,
+                offset: after,
+                attributes: getFields(info)
+            });
         },
-        async post(root: any, { id }: any) {
-            return await Post.findByPk(id);
+        async post(root: any, { id }: any, { user = null }: any, info: any) {
+            return await Post.findByPk(id, {
+                attributes: getFields(info)
+            });
         }
     },
 
     Post: {
-        async createdBy(post: PostType) {
-            return await post.getUser();
+        async createdBy(post: PostType, args: any, context: any, info: any) {
+            return await post.getUser({
+                attributes: getFields(info)
+            });
         },
-        async comments(post: PostType) {
-            return await post.getComments();
+        async comments(post: PostType, args: any, context: any, info: any) {
+            return await post.getComments({
+                attributes: getFields(info)
+            });
         }
     },
 };

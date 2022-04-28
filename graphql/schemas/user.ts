@@ -15,7 +15,8 @@ type User {
 
     extend type Query {
         users: [User]
-        user(id: ID!): User
+        # If ID is not provided, it will return current user
+        user(id: ID): User
     }
 
     type Login {
@@ -25,8 +26,9 @@ type User {
 
     extend type Mutation {
         createUser(username: String!, password: String!): User
+        # If ID is not provided, it will use current users ID
         updateUser(id: ID, data: UserUpdate!): User
-        deleteUser(id: ID!): Int
+        deleteUser(id: ID!): ID
     }
     
     input UserUpdate {

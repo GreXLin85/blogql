@@ -22,9 +22,9 @@ export default gql`
    }
 
     extend type Mutation {
-      createComment(text: String!, postId: ID!, createdBy: ID!): Comment
+      createComment(text: String!, postId: ID!, createdBy: ID): Comment
       updateComment(id: ID!, data: CommentUpdate!): Comment
-      deleteComment(id: ID!): Comment
+      deleteComment(id: ID!): ID
     }
 
 `;

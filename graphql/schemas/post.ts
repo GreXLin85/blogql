@@ -12,7 +12,7 @@ export default gql`
     }
     
     extend type Query {
-        posts: [Post]
+        posts(first: Int, after: Int): [Post]
         post(id: ID!): Post
     }
 
@@ -25,6 +25,6 @@ export default gql`
     extend type Mutation {
         createPost(title: String!, description: String!, createdBy: ID): Post
         updatePost(id: ID!, data: PostUpdate!): Post
-        deletePost(id: ID!): Post
+        deletePost(id: ID!): ID
     }
 `;

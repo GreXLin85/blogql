@@ -3,6 +3,7 @@ import { compareSync } from 'bcryptjs';
 import { AuthenticationError, ForbiddenError } from 'apollo-server-express';
 
 import { initModels, User as UserType } from '../../models';
+import getFields from '../utils/getFields';
 const { User } = initModels();
 
 export default {
@@ -24,10 +25,15 @@ export default {
       const { username, password } = args;
 
 
-      const userData = await User.findOne({ where: { username }, include: { all: true } });
+      const userData = await User.findOne({ where: { username } });
 
       if (userData && compareSync(password, userData.password)) {
-        return { user: userData.toJSON(), token: sign({ id: userData.id }, 'mySecret') };
+        return {
+          // @ts-ignore
+          user: userData.toJSON(), token: sign({ id: userData.id }, process.env.JWT_SECRET, {
+            algorithm: process.env.JWT_ALGORITHM,
+          })
+        };
       }
       throw new AuthenticationError('Invalid credentials');
     },
@@ -52,14 +58,18 @@ export default {
         id = user.id;
       }
 
-      let updatedUser = await User.update(args.data, { where: { id } });
-
-
-      if (updatedUser) {
-        return await User.noCache().findByPk(id);
+      const userData = await User.findByPk(id);
+      if (userData) {
+        if (userData.id === user.id) {
+          try {
+            return await userData.update(args.data);
+          } catch (error) {
+            throw new ForbiddenError('Unable to update a user');
+          }
+        }
+        throw new ForbiddenError('You are not allowed to update this user');
       }
-      throw new Error('User not found');
-
+      throw new ForbiddenError('Unable to update a user');
     },
 
     async deleteUser(root: any, args: any, { user = null }: any) {
@@ -68,30 +78,47 @@ export default {
       }
       const { id } = args;
 
-      let destroyedUser = await User.destroy({ where: { id } });
-
-      if (destroyedUser) {
-        return destroyedUser;
+      const userData = await User.findByPk(id);
+      if (userData) {
+        if (userData.id === user.id) {
+          try {
+            await userData.destroy();
+            return id;
+          } catch (error) {
+            throw new ForbiddenError('Unable to delete a user');
+          }
+        }
+        throw new ForbiddenError('You are not allowed to delete this user');
       }
-      throw new Error('User not found');
     }
-
-
   },
   Query: {
-    async users() {
-      return await User.findAll();
+    async users(_: any, { first, after }: any, context: any, info: any) {
+      return await User.findAll({
+        limit: first,
+        offset: after,
+        attributes: getFields(info)
+      });
     },
-    async user(root: any, { id }: any) {
-      return await User.findByPk(id);
+    async user(root: any, { id }: any, { user = null }: any, info: any) {
+      if (!id) {
+        id = user.id;
+      }
+      return await User.findByPk(id, {
+        attributes: getFields(info)
+      });
     },
   },
   User: {
-    async posts(user: UserType) {
-      return await user.getPosts();
+    async posts(user: UserType, args: any, context: any, info: any) {
+      return await user.getPosts({
+        attributes: getFields(info)
+      });
     },
-    async comments(user: UserType) {
-      return await user.getComments();
+    async comments(user: UserType, args: any, context: any, info: any) {
+      return await user.getComments({
+        attributes: getFields(info)
+      });
     }
   }
 };
