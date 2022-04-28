@@ -7,7 +7,11 @@ const { User } = initModels();
 const verifyToken = async (token: string) => {
     try {
         if (!token) return null;
-        const { id }: any = jwt.verify(token, 'mySecret');
+        
+        // @ts-ignore
+        const { id }: any = jwt.verify(token, process.env.JWT_SECRET, {
+            algorithms: process.env.JWT_ALGORITHM,
+        });
         const user = await User.findByPk(id);
         return user;
     } catch (error: any) {
@@ -17,6 +21,7 @@ const verifyToken = async (token: string) => {
 
 export default async ({ req }: any) => {
     const token = (req.headers && req.headers.authorization) || '';
+    
     const user = await verifyToken(token)
     return { user };
 };
