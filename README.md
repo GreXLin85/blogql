@@ -13,7 +13,7 @@ This project is just an simple blog project works with GraphQL. I made this proj
 2. Configure database with .env file
 3. Setup database: `npm run db:up`
 4. Migrate database: `npm run db:migrate`
-5. Run server: `npm run start`
+
 ### Run
 - Local development: `npm run dev`
 - Production build: `npm run build && npm start`
