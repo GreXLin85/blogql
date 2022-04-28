@@ -1,5 +1,5 @@
 # BlogQL
-This project is just an simple blog project works with GraphQL. I made this project for learning GraphQL and iIthink I had good job.
+This project is just an simple blog project works with GraphQL. I made this project for learning GraphQL and I think I had good job.
 
 ## Running Project
 
