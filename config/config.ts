@@ -1,10 +1,11 @@
-module.exports = {
+export default {
   development: {
     dialect: process.env.DB_DIALECT_DEV,
     database: process.env.DB_NAME_DEV,
     username: process.env.DB_USERNAME_DEV,
     password: process.env.DB_PASSWORD_DEV,
     host: process.env.DB_HOST_DEV,
+    // @ts-ignore
     port: parseInt(process.env.DB_PORT_DEV)
   },
   test: {
@@ -13,6 +14,7 @@ module.exports = {
     username: process.env.DB_USERNAME_TEST,
     password: process.env.DB_PASSWORD_TEST,
     host: process.env.DB_HOST_TEST,
+    // @ts-ignore
     port: parseInt(process.env.DB_PORT_TEST)
   },
   production: {
@@ -21,6 +23,7 @@ module.exports = {
     username: process.env.DB_USERNAME_PROD,
     password: process.env.DB_PASSWORD_PROD,
     host: process.env.DB_HOST_PROD,
+    // @ts-ignore
     port: parseInt(process.env.DB_PORT_PROD)
   }
 }
