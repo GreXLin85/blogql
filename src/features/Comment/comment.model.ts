@@ -1,18 +1,18 @@
 import {
   Association,
+  BelongsToCreateAssociationMixin,
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
-  BelongsToCreateAssociationMixin,
   CreationOptional,
   DataTypes,
-  InferCreationAttributes,
   InferAttributes,
+  InferCreationAttributes,
   Model,
   NonAttribute,
   Sequelize
 } from 'sequelize'
-import type { Post } from './Post'
-import type { User } from './User'
+import type { Post } from '../Post/post.model'
+import type { User } from '../User/user.model'
 
 type CommentAssociations = 'user' | 'post'
 
@@ -32,19 +32,19 @@ export class Comment extends Model<
   declare getUser: BelongsToGetAssociationMixin<User>
   declare setUser: BelongsToSetAssociationMixin<User, number>
   declare createUser: BelongsToCreateAssociationMixin<User>
-  
+
   // Comment belongsTo Post
   declare post?: NonAttribute<Post>
   declare getPost: BelongsToGetAssociationMixin<Post>
   declare setPost: BelongsToSetAssociationMixin<Post, number>
   declare createPost: BelongsToCreateAssociationMixin<Post>
-  
+
   declare static associations: {
     user: Association<Comment, User>,
     post: Association<Comment, Post>
   }
 
-  static initModel(sequelize: Sequelize): typeof Comment {
+  static initModel (sequelize: Sequelize): typeof Comment {
     Comment.init({
       id: {
         type: DataTypes.INTEGER.UNSIGNED,
@@ -70,7 +70,7 @@ export class Comment extends Model<
     }, {
       sequelize
     })
-    
+
     return Comment
   }
 }
