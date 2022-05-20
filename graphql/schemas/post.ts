@@ -1,11 +1,11 @@
-import { gql } from 'apollo-server-express';
+import { gql } from 'apollo-server-express'
 
 export default gql`
     type Post {
         id: ID!
         title: String!
         description: String!
-        createdBy: User!
+        createdBy: User
         comments: [Comment]
         createdAt: String
         updatedAt: String
@@ -27,4 +27,10 @@ export default gql`
         updatePost(id: ID!, data: PostUpdate!): Post
         deletePost(id: ID!): ID
     }
-`;
+
+    extend type Subscription {
+        postCreation: Post
+        postUpdate: Post
+        postDeletion: ID
+    }
+`

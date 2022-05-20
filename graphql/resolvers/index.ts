@@ -1,6 +1,6 @@
 
-import userResolvers from './user';
-import postResolvers from './post';
-import commentResolvers from './comment';
+import commentResolvers from './comment'
+import postResolvers from './post'
+import userResolvers from './user'
 
-export default [userResolvers, postResolvers, commentResolvers];
+export default [userResolvers, postResolvers, commentResolvers]

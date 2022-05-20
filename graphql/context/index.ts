@@ -1,27 +1,17 @@
-import { initModels } from '../../models';
-import jwt from 'jsonwebtoken';
-import { AuthenticationError } from 'apollo-server-express';
+import { Request } from 'express'
+import { User } from '../../models'
+import verify from './verify'
 
-const { User } = initModels();
+export interface Context {
+  verifyToken: () => Promise<{
+      user: User | null;
+  }>
+  test : () => string
+}
 
-const verifyToken = async (token: string) => {
-    try {
-        if (!token) return null;
-        
-        // @ts-ignore
-        const { id }: any = jwt.verify(token, process.env.JWT_SECRET, {
-            algorithms: process.env.JWT_ALGORITHM,
-        });
-        const user = await User.findByPk(id);
-        return user;
-    } catch (error: any) {
-        throw new AuthenticationError(error.message);
-    }
-};
-
-export default async ({ req }: any) => {
-    const token = (req.headers && req.headers.authorization) || '';
-    
-    const user = await verifyToken(token)
-    return { user };
-};
+export default ({ req }: { req: Request }): Context => ({
+  verifyToken: () => verify({ req }),
+  test: () => {
+    return 'test'
+  }
+})

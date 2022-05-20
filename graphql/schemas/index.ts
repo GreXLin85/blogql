@@ -1,8 +1,7 @@
-import { gql } from 'apollo-server-express';
-import userType from './user';
-import postType from './post';
-import commentType from './comment';
-
+import { gql } from 'apollo-server-express'
+import commentType from './comment'
+import postType from './post'
+import userType from './user'
 
 const rootType = gql`
  type Query {
@@ -11,7 +10,10 @@ const rootType = gql`
  type Mutation {
      root: String
  }
+ type Subscription {
+    root: String
+}
 
-`;
+`
 
-export default [rootType, userType, postType, commentType];
+export default [rootType, userType, postType, commentType]

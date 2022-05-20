@@ -1,4 +1,4 @@
-import { Sequelize, Options } from 'sequelize'
+import { Options, Sequelize } from 'sequelize'
 import configs from './config/config'
 
 const env = process.env.NODE_ENV || 'development'

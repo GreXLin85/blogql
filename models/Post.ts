@@ -1,22 +1,22 @@
 import {
   Association,
+  BelongsToCreateAssociationMixin,
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
-  BelongsToCreateAssociationMixin,
   CreationOptional,
   DataTypes,
-  HasManyGetAssociationsMixin,
-  HasManySetAssociationsMixin,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
+  HasManyCountAssociationsMixin,
   HasManyCreateAssociationMixin,
-  HasManyRemoveAssociationMixin,
-  HasManyRemoveAssociationsMixin,
+  HasManyGetAssociationsMixin,
   HasManyHasAssociationMixin,
   HasManyHasAssociationsMixin,
-  HasManyCountAssociationsMixin,
-  InferCreationAttributes,
+  HasManyRemoveAssociationMixin,
+  HasManyRemoveAssociationsMixin,
+  HasManySetAssociationsMixin,
   InferAttributes,
+  InferCreationAttributes,
   Model,
   NonAttribute,
   Sequelize
@@ -42,7 +42,7 @@ export class Post extends Model<
   declare getUser: BelongsToGetAssociationMixin<User>
   declare setUser: BelongsToSetAssociationMixin<User, number>
   declare createUser: BelongsToCreateAssociationMixin<User>
-  
+
   // Post hasMany Comment
   declare comments?: NonAttribute<Comment[]>
   declare getComments: HasManyGetAssociationsMixin<Comment>
@@ -55,13 +55,13 @@ export class Post extends Model<
   declare hasComment: HasManyHasAssociationMixin<Comment, number>
   declare hasComments: HasManyHasAssociationsMixin<Comment, number>
   declare countComments: HasManyCountAssociationsMixin
-  
+
   declare static associations: {
     user: Association<Post, User>,
     comments: Association<Post, Comment>
   }
 
-  static initModel(sequelize: Sequelize): typeof Post {
+  static initModel (sequelize: Sequelize): typeof Post {
     Post.init({
       id: {
         type: DataTypes.INTEGER.UNSIGNED,
@@ -91,7 +91,7 @@ export class Post extends Model<
     }, {
       sequelize
     })
-    
+
     return Post
   }
 }

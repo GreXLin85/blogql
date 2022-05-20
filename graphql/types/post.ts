@@ -1,0 +1,3 @@
+export const POST_CREATION = 'POST_CREATION'
+export const POST_UPDATE = 'POST_UPDATE'
+export const POST_DELETION = 'POST_DELETION'

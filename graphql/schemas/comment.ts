@@ -1,4 +1,4 @@
-import { gql } from 'apollo-server-express';
+import { gql } from 'apollo-server-express'
 
 export default gql`
 
@@ -6,7 +6,7 @@ export default gql`
    id: ID!
    text: String!
    createdBy: User!
-   postId: Post!
+   postId: Post
    createdAt: String
    updatedAt: String
  }
@@ -27,4 +27,4 @@ export default gql`
       deleteComment(id: ID!): ID
     }
 
-`;
+`
