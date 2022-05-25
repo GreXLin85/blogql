@@ -1,12 +1,14 @@
 import { Comment as CommentType, initModels } from '../../models'
 
 import { ApolloError, AuthenticationError } from 'apollo-server-express'
+import { Context } from '../context'
 import getFields from '../utils/getFields'
 const { Post, Comment } = initModels()
 
 export default {
   Mutation: {
-    async createComment (_: any, { text, postId, createdBy }: any, { user = null }: any) {
+    async createComment (_: any, { text, postId, createdBy }: any, context: Context) {
+      const { user } = (await context.verifyToken())
       if (!user) {
         throw new AuthenticationError('You must login to create a comment')
       }
@@ -21,7 +23,8 @@ export default {
       }
       throw new ApolloError('Unable to create a comment')
     },
-    async updateComment (_: any, { id, data }: any, { user = null }: any) {
+    async updateComment (_: any, { id, data }: any, context: Context) {
+      const { user } = (await context.verifyToken())
       if (!user) {
         throw new AuthenticationError('You must login to update a comment')
       }
@@ -34,7 +37,8 @@ export default {
       }
       throw new ApolloError('Unable to update a comment')
     },
-    async deleteComment (_: any, { id }: any, { user = null }: any) {
+    async deleteComment (_: any, { id }: any, context: Context) {
+      const { user } = (await context.verifyToken())
       if (!user) {
         throw new AuthenticationError('You must login to delete a comment')
       }
