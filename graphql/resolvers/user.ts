@@ -2,6 +2,7 @@ import { AuthenticationError, ForbiddenError } from 'apollo-server-express'
 import { compareSync } from 'bcryptjs'
 import { sign } from 'jsonwebtoken'
 
+import { Context } from '../context'
 import { User as UserType, initModels } from '../../models'
 import getFields from '../utils/getFields'
 const { User } = initModels()
@@ -10,7 +11,8 @@ export default {
   Mutation: {
     /* For Auth */
 
-    async register (root: any, args: any, { user = null }: any) {
+    async register (root: any, args: any, context: Context) {
+      const { user } = (await context.verifyToken())
       if (user) {
         throw new ForbiddenError('You are already logged in')
       }
@@ -18,7 +20,8 @@ export default {
       return await User.create({ username, password })
     },
 
-    async login (root: any, args: any, { user = null }: any) {
+    async login (root: any, args: any, context: Context) {
+      const { user } = (await context.verifyToken())
       if (user) {
         throw new ForbiddenError('You are already logged in')
       }
@@ -40,7 +43,8 @@ export default {
 
     /* For Mutations */
 
-    async createUser (root: any, args: any, { user = null }: any) {
+    async createUser (root: any, args: any, context: Context) {
+      const { user } = (await context.verifyToken())
       if (!user) {
         throw new ForbiddenError('You must be logged in')
       }
@@ -48,7 +52,8 @@ export default {
       return await User.create({ username, password })
     },
 
-    async updateUser (root: any, args: any, { user = null }: any) {
+    async updateUser (root: any, args: any, context: Context) {
+      const { user } = (await context.verifyToken())
       if (!user) {
         throw new ForbiddenError('You must be logged in')
       }
@@ -72,7 +77,8 @@ export default {
       throw new ForbiddenError('Unable to update a user')
     },
 
-    async deleteUser (root: any, args: any, { user = null }: any) {
+    async deleteUser (root: any, args: any, context: Context) {
+      const { user } = (await context.verifyToken())
       if (!user) {
         throw new ForbiddenError('You must be logged in')
       }
@@ -107,7 +113,16 @@ export default {
       return await User.findByPk(id, {
         attributes: getFields(info)
       })
+    },
+    async currentUser (root: any, args: any, context: Context) {
+      const { user } = (await context.verifyToken())
+
+      if (!user) {
+        throw new ForbiddenError('You must be logged in')
+      }
+      return user
     }
+
   },
   User: {
     async posts (user: UserType, args: any, context: any, info: any) {

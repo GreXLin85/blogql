@@ -17,6 +17,7 @@ type User {
         users: [User]
         # If ID is not provided, it will return current user
         user(id: ID): User
+        currentUser: User
     }
 
     type Login {
