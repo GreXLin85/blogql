@@ -63,7 +63,7 @@ export default {
           try {
             await post.destroy()
 
-            pubSub.publish(POST_DELETION, { id })
+            pubSub.publish(POST_DELETION, { postDeletion: { id } })
 
             return id
           } catch (error) {

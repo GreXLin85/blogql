@@ -28,9 +28,13 @@ export default gql`
         deletePost(id: ID!): ID
     }
 
+    type postDeletionResponse {
+        id: ID!
+    }
+
     extend type Subscription {
         postCreation: Post
         postUpdate: Post
-        postDeletion: ID
+        postDeletion: postDeletionResponse
     }
 `
