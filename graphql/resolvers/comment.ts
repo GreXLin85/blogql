@@ -1,8 +1,10 @@
 import { Comment as CommentType, initModels } from '../../models'
 
 import { ApolloError, AuthenticationError } from 'apollo-server-express'
+import { COMMENT_CREATION, COMMENT_DELETION, COMMENT_UPDATE } from '../types/comment'
 import { Context } from '../context'
 import getFields from '../utils/getFields'
+import pubSub from '../utils/pubSub'
 const { Post, Comment } = initModels()
 
 export default {
@@ -84,6 +86,17 @@ export default {
       return await comment.getPost({
         attributes: [...getFields(info), 'createdBy']
       })
+    }
+  },
+  Subscription: {
+    commentCreation: {
+      subscribe: () => pubSub.asyncIterator(COMMENT_CREATION)
+    },
+    commentUpdate: {
+      subscribe: () => pubSub.asyncIterator(COMMENT_UPDATE)
+    },
+    commentDeletion: {
+      subscribe: () => pubSub.asyncIterator(COMMENT_DELETION)
     }
   }
 }

@@ -27,4 +27,14 @@ export default gql`
       deleteComment(id: ID!): ID
     }
 
+    type commentDeletionResponse {
+        id: ID!
+    }
+
+    extend type Subscription {
+      commentCreation: Comment
+      commentUpdate: Comment
+      commentDeletion: commentDeletionResponse
+    }
+
 `
