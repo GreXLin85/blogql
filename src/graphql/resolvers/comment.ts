@@ -64,26 +64,20 @@ export default {
     async comments (post: any, { first, after }: any, ctx: any, info: any) {
       return await Comment.findAll({
         limit: first,
-        offset: after,
-        attributes: [...getFields(info), 'postId']
+        offset: after
       })
     },
     async comment (root: any, { id }: any, ctx: any, info: any) {
       return await Comment.findByPk(id, {
-        attributes: [...getFields(info), 'postId']
       })
     }
   },
   Comment: {
     async createdBy (comment: CommentType, _: any, ctx: any, info: any) {
-      return await comment.getUser({
-        attributes: getFields(info)
-      })
+      return await comment.getUser()
     },
     async postId (comment: CommentType, _: any, ctx: any, info: any) {
-      return await comment.getPost({
-        attributes: [...getFields(info), 'createdBy']
-      })
+      return await comment.getPost()
     }
   }
 }

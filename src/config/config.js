@@ -1,3 +1,5 @@
+console.log(process.env.DB_DIALECT_DEV)
+
 module.exports = {
   development: {
     dialect: process.env.DB_DIALECT_DEV,

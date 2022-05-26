@@ -1,0 +1,61 @@
+services:
+  backend-node:
+    build:
+      context: ./src
+    container_name: blogql-backend-node
+    depends_on:
+      database-mysql:
+        condition: service_started
+    ports:
+      - mode: ingress
+        target: 3002
+        published: "3002"
+        protocol: tcp
+    restart: always
+    volumes:
+      - ./src:/src
+    env_file:
+      - .env
+  database-mysql:
+    container_name: blogql-db-mysql
+    env_file:
+      - environment.env
+    image: mysql:8.0
+    networks:
+      backend-database: null
+      mysql-phpmyadmin: null
+    ports:
+      - mode: ingress
+        target: 3306
+        published: "3306"
+        protocol: tcp
+    restart: always
+    volumes:
+      - type: bind
+        source: ./volumes/mysql-data
+        target: /var/lib/mysql
+      - type: bind
+        source: ./volumes/mysql-logs
+        target: /var/log/mysql
+  db-admin-phpmyadmin:
+    container_name: blogql-dbadmin-phpmyadmin
+    depends_on:
+      database-mysql:
+        condition: service_started
+    env_file:
+      - environment.env
+    image: phpmyadmin/phpmyadmin:latest
+    networks:
+      mysql-phpmyadmin: null
+    ports:
+      - mode: ingress
+        target: 80
+        published: "80"
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: ./volumes/phpmyadmin-sessions
+        target: /sessions
+networks:
+  backend-database: {}
+  mysql-phpmyadmin: {}

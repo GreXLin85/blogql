@@ -1,3 +1,6 @@
+console.log(process.env.DB_DIALECT_DEV)
+
+
 export default {
   development: {
     dialect: process.env.DB_DIALECT_DEV,

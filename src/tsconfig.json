@@ -9,8 +9,5 @@
     "esModuleInterop": true,
     "allowJs": true,
     "forceConsistentCasingInFileNames": true
-  },
-  "include": [
-    "src/**/*"
-  ]
+  }
 }
