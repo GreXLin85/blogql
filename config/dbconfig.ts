@@ -6,7 +6,8 @@ export default {
     password: process.env.DB_PASSWORD_DEV,
     host: process.env.DB_HOST_DEV,
     // @ts-ignore
-    port: parseInt(process.env.DB_PORT_DEV)
+    port: parseInt(process.env.DB_PORT_DEV),
+    logging: false
   },
   test: {
     dialect: process.env.DB_DIALECT_TEST,
